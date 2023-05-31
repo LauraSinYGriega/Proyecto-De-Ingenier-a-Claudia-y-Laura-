@@ -14,8 +14,7 @@ public class Proyecto_Ing_V3_Main {
 
 
 	
-	public static void main(String[] args) {
-		//Ir creando en función de la versión que se encuentra en sucio, esta. 
+	public static void main(String[] args) { 
 		
 		
 		System.out.println ("Tu vecino te roba la WiFi, deja de consentirlo. "
