@@ -24,11 +24,6 @@ public class Proyecto_Ing_V3_Main {
 	public static void main(String[] args) { 
 		
 		
-		System.out.println ("Tu vecino te roba la WiFi, deja de consentirlo. "
-				+ " En Cisco nos preocupa más tu bienestar "
-				+ " que el de tu vecino. ");
-		
-		
 		////BLOQUE DE CONSTRUCCIÓN DE VALORES ALEATORIOS////
 		
 		//ANCHO DE BANDA

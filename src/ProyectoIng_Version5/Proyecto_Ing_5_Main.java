@@ -1,23 +1,18 @@
-package ProyectoIng_Version4;
-
+package ProyectoIng_Version5;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Vector;
-import java.util.ArrayList;
 
 
 /*ESPECIFICACIONES DE LA VERSIÓN:
- * Versión 3, pero con vectores y alguna otra mejora. 
- * Nos hemos dado cuenta de que no podemos almacenar los datos en arrays ya que nos impide generar datos de manera
- * ilimitada, para mejorarlo, hemos implementado vectores. 
- * No obstante, también hemos investigado acerca de ArrayLists.
+ * ...
  */
 
 
-public class Proyecto_Ing_4_Main {
+
+public class Proyecto_Ing_5_Main {
 
 	//Función genérica para generar números aleatorios FLOAT (Usada en: Ancho de Banda; Throughput; Latencia):
 	public static float generaNumAleatorioFLOAT (float minimo, float maximo) {
@@ -26,12 +21,15 @@ public class Proyecto_Ing_4_Main {
 
 
 	public static void main(String[] args) {
-
-
+		
+		////BLOQUE DE CONSTRUCCIÓN DE VALORES ALEATORIOS////
+	
 		//ANCHO DE BANDA
 		float minAnchoBanda=20;
 		float maxAnchoBanda=1000;
-		
+		//THROUGHPUT
+		float minThroughput=20;
+		float maxThroughput=1000;
 
 		Runnable runnable = new Runnable() {
 			@Override
@@ -48,7 +46,7 @@ public class Proyecto_Ing_4_Main {
 						int x=0;//Variable que nos permite guardar las posiciones del vector
 
 						try {
-							File fichero = new File ("pruebaVersion4.csv");
+							File fichero = new File ("pruebaVersion5.csv");
 							if (!fichero.exists()) {
 								fichero.createNewFile();
 							}
@@ -87,4 +85,3 @@ public class Proyecto_Ing_4_Main {
 	}//Llave main. DU NOT WIPE DOWN
 
 }//Llave class. DU NOT WIPE DOWN
-
