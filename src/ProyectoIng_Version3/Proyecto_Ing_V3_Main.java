@@ -5,6 +5,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.*;
 
+/*ESPECIFICACIONES TÉCNICAS DE LA VERSIÓN:
+ * En esta versión se ha conseguido implementar la funciñin Runnable que nos permitirá guardar datos cada x tiempo.
+ * Es una versión de prueba por lo que solo lo hace un valor (Ancho de Banda).
+ */
+
+
+
 public class Proyecto_Ing_V3_Main {
 
 	//Función genérica para generar números aleatorios FLOAT (Usada en: Ancho de Banda; Throughput; Latencia):
