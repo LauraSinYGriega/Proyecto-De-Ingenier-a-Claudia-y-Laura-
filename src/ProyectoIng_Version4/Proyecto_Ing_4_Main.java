@@ -54,7 +54,8 @@ public class Proyecto_Ing_4_Main {
 							}
 							FileWriter fw = new FileWriter (fichero.getAbsoluteFile(), true);
 							BufferedWriter bw = new BufferedWriter (fw);
-							//Instancia del vector, sin dimensiones específicas, si se rebasa la dimensión inicial, la dimensión se duplica
+							/*Instancia del vector, sin dimensiones específicas, 
+							 * si se rebasa la dimensión inicial, la dimensión se duplica*/
 							Vector Datos = new Vector();
 							Datos.add(new Float (valorAnchoBanda));
 							float GuardadoAnchoBanda=0;//Almacenamiento del dato por posiciones para poder guardarlo en fichero
