@@ -30,7 +30,17 @@ public class Proyecto_Ing_5_Main {
 		//THROUGHPUT
 		float minThroughput=20;
 		float maxThroughput=1000;
+		//LATENCIA
+		float minLatencia=0;
+		float maxLatencia=500;
+		//TASA DE ERROR DE BITS (BER) **************************NO ACABADO, SERIAS DUDAS********************************************
+		int minBER=0;
+		int maxBER=4;
+		//TRÁFICO DE DATOS O FLUJO DE DATOS
+		int minFlujoDatos=0;
+		int maxFlujoDatos=1;
 
+		
 		Runnable runnable = new Runnable() {
 			@Override
 			public void run() {
@@ -42,7 +52,15 @@ public class Proyecto_Ing_5_Main {
 						Thread.sleep(1000);
 						// Y después realizamos las operaciones
 						System.out.println("Guardando datos, espere...");
+						
+						//Creaccion de aleatorios:
 						float valorAnchoBanda=generaNumAleatorioFLOAT(minAnchoBanda,maxAnchoBanda);
+						float valorThroughput=generaNumAleatorioFLOAT(minThroughput,maxThroughput);
+						float valorLatencia=generaNumAleatorioFLOAT(minLatencia,maxLatencia);
+						float valorBER = generaNumAleatorioFLOAT(minBER,maxBER);//TENGO QUE CAMBIAR ESTO A INT CON UNA NUEVA FUNCIÓN, DE MOMENTO LO HAGO CON UNA SOLA FUNCION DE FLOAT
+						float valorFlujoDatos = generaNumAleatorioFLOAT(minFlujoDatos,maxFlujoDatos);
+						
+						
 						int x=0;//Variable que nos permite guardar las posiciones del vector
 
 						try {
@@ -53,11 +71,37 @@ public class Proyecto_Ing_5_Main {
 							FileWriter fw = new FileWriter (fichero.getAbsoluteFile(), true);
 							BufferedWriter bw = new BufferedWriter (fw);
 							//Instancia del vector, sin dimensiones específicas, si se rebasa la dimensión inicial, la dimensión se duplica
-							Vector Datos = new Vector();
-							Datos.add(new Float (valorAnchoBanda));
-							float GuardadoAnchoBanda=0;//Almacenamiento del dato por posiciones para poder guardarlo en fichero
-							GuardadoAnchoBanda=(Float)Datos.get(x);//Llamada a cada posición del vector.
-							bw.write(GuardadoAnchoBanda + "\r\n");//Escritura en el fichero del valor ancho de banda
+							Vector vectorAnchoBanda = new Vector();
+							vectorAnchoBanda.add(new Float (valorAnchoBanda));
+							
+							Vector vectorThroughput = new Vector ();
+							vectorThroughput.add(new Float (valorThroughput));
+							
+							Vector vectorLatencia = new Vector();
+							vectorLatencia.add(new Float (valorLatencia));
+							
+							Vector vectorBER = new Vector();
+							vectorBER.add(new Float (valorBER));
+							
+							Vector vectorFlujoDatos = new Vector();
+							vectorFlujoDatos.add(new Float (valorFlujoDatos));
+							
+							//Almacenamiento del dato por posiciones para poder guardarlo en fichero
+							float GuardadoAnchoBanda=0;
+							float GuardadoThroughput=0;
+							float GuardadoLatencia=0;
+							float GuardadoBER=0;
+							float GuardadoFlujoDatos=0;
+							
+							//Llamada a cada posición del vector.
+							GuardadoAnchoBanda=(Float)vectorAnchoBanda.get(x);
+							GuardadoThroughput= (Float)vectorThroughput.get(x);
+							GuardadoLatencia= (Float)vectorLatencia.get(x);
+							GuardadoBER=(Float)vectorBER.get(x);
+							GuardadoFlujoDatos=(Float)vectorFlujoDatos.get(x);
+							
+							//Escritura en el fichero de valores:
+							bw.write(GuardadoAnchoBanda + "  " + GuardadoThroughput + "  " + GuardadoLatencia + "   " + GuardadoBER + "   " + GuardadoFlujoDatos +  "\r\n");
 							bw.close();
 
 						} catch (Exception e) {
