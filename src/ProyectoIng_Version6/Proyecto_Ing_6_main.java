@@ -13,13 +13,31 @@ import java.util.Vector;
 /*ESPECIFICACIONES DE LA VERSIÓN:
  * Se han implementado nuevas funciones para facilitar el fragmento del main.
  * Se generan 2 ficheros, uno con los datos y otro con las cabeceras, siendo este último donde metemos el primer fichero
- * obteniendo como resultado el fichero con nombres y datos. 
+ * obteniendo como resultado el fichero con nombres y datos.
+ * 
+ *  CAMBIO LA POSICIÓN DEL MAIN: Hemos observado que al poner el main debajo del todo java nos generaba un error ya que al llamar a la función, primero leía
+ *  la función y luego el nombre, por lo que en la primera repetición del bucle, no encontraba el archivo.
+ *  Poniendo la función main en primer lugar, evitamos esto.
  */
 
 
 
 public class Proyecto_Ing_6_main {
 
+	//Función MAIN del programa
+		public static void main(String[] args) {
+
+			//DECLARACIÓN DE VARIABLES PARA NOMBRAR LOS FICHEROS
+			String dataFileName = "datosVersion6.csv"; //Fichero que guarda los datos aleatorios
+			String headerFileName = "pruebaVersion6.csv"; //Fichero que guarda: las cabeceras + fichero anterior (FICHERO COMPLETO)
+			
+			//Llamada a las funciones que generan los ficheros
+			generaRegistrosAleatorios(dataFileName);
+			creadorFicheroCabecera (dataFileName,headerFileName);
+		
+		}//Llave main. DU NOT WIPE DOWN
+	
+	
 	//Función que genera valores aleatorios con decimales: Ancho de Banda, Throughput y Latencia
 	public static String generaRandomFLOAT() {
 		Random random = new Random();
@@ -58,7 +76,7 @@ public class Proyecto_Ing_6_main {
 								fichero.createNewFile();
 							}
 							//Escribir aleatorios en el registro
-							String filaDeDatos= generaRandomINTyFLOAT();
+							//String filaDeDatos= generaRandomINTyFLOAT();
 							//Genera un vector con los datos
 							Vector v = new Vector();
 							v.add(new String (generaRandomINTyFLOAT()));
@@ -103,20 +121,6 @@ public class Proyecto_Ing_6_main {
 			e.printStackTrace();
 		}
 	}
-	
-	//Función MAIN del programa
-	public static void main(String[] args) {
-
-		//DECLARACIÓN DE VARIABLES PARA NOMBRAR LOS FICHEROS
-		String dataFileName = "datosVersion6.csv"; //Fichero que guarda los datos aleatorios
-		String headerFileName = "pruebaVersion6.csv"; //Fichero que guarda: las cabeceras + fichero anterior (FICHERO COMPLETO)
-		
-		//Llamada a las funciones que generan los ficheros
-		generaRegistrosAleatorios(dataFileName);
-		creadorFicheroCabecera (dataFileName,headerFileName);
-	
-	}//Llave main. DU NOT WIPE DOWN
-
 	
 	
 	
