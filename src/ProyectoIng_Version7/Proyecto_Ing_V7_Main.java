@@ -11,6 +11,7 @@ import java.util.Random;
 //import java.util.Vector;
 //import java.util.ArrayList;
 //import java.util.List;
+import java.util.Vector;
 
 /*ESPECIFICACIONES DE LA VERSIÓN:
  * ...
@@ -46,17 +47,17 @@ public class Proyecto_Ing_V7_Main {
 		Random random = new Random();
 		float anchoBanda = random.nextFloat()*(1000-20 +1)+20;
 		float throughput = random.nextFloat()*(1000-20 +1)+20;
-		float latencia = random.nextFloat()*(500-0 +1)+0;
-		return anchoBanda + " " + throughput + " " + latencia;
+		return anchoBanda + ";" + throughput;
 	}
 	
 	//Función que genera valores aleatorios enteros: BER y Flujo de Datos (además, añade la primera función de valores con decimales)
 	public static String generaRandomINTyFLOAT() {
 		Random random = new Random();
 		String llamadaDatosFloat = generaRandomFLOAT();
+		int latencia = random.nextInt(500-0 +1)+0;
 		int BER = random.nextInt(10-0 +1)+0;
 		int FlujoDatos = random.nextInt(1-0 +1)+0;
-		return llamadaDatosFloat + " " + BER + " " + FlujoDatos;
+		return llamadaDatosFloat + ";" + latencia+ ";" + BER + ";" + FlujoDatos;
 	}
 	
 	//Función que reune todos los valores aleatorios en un vector, y los imprime en un bucle cada 4 segundos
@@ -79,16 +80,15 @@ public class Proyecto_Ing_V7_Main {
 								fichero.createNewFile();
 							}
 							//Escribir aleatorios en el registro
-							String filaDeDatos= generaRandomINTyFLOAT();//Si no guardamos la fila de aleatorios, nos aparece un error a la hora de compilar
+							//String filaDeDatos= generaRandomINTyFLOAT();
 							
 							//Genera un vector con los datos
-							/*Vector v = new Vector();
-							v.add(new String (generaRandomINTyFLOAT()));*/
-							
-							/*String Guardado = " ";//datos por posiciones
-							Guardado=(String)v.get(x);*///Llamada a cada vector
-							bw.write(filaDeDatos + "\r\n"); 
-							bw.flush();
+							Vector<String> v = new Vector<String>();
+							v.add(new String (generaRandomINTyFLOAT()));
+							String Guardado = " ";//datos por posiciones
+							Guardado=v.get(x);//Llamada a cada vector
+							bw.write(Guardado + "\r\n"); 
+							bw.close();
 						 } catch (IOException e) {
 					            e.printStackTrace();
 					     }
@@ -100,7 +100,6 @@ public class Proyecto_Ing_V7_Main {
 			}//llave public run
 		};//LLAVE DE LA INTERFACE RUNNABLE
 		
-		//CHAT A PUESTO EL HILO FUERA.................................
 		// Creamos un hilo y le pasamos el runnable
 		Thread hilo = new Thread(runnable);
 		hilo.start();
@@ -108,8 +107,6 @@ public class Proyecto_Ing_V7_Main {
 		System.out.println("Impresión de mensajes....");
 	}//Llave de la funcio principal
 
-	
-	
 	//Función que imprime los rótulos en un nuevo fichero, y además, llama al fichero de datos y lo imprime a continuación en este nuevo fichero
 	private static void creadorFicheroCabecera (String dataFileName, String headerFileName) {
 		try (BufferedWriter bw = new BufferedWriter (new FileWriter(headerFileName))){
@@ -130,36 +127,47 @@ public class Proyecto_Ing_V7_Main {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	public static void filtrarDatos (String datos, String datosFiltrados) {
-		try (BufferedReader br = new BufferedReader (new FileReader(datos));
-				BufferedWriter bw= new BufferedWriter (new FileWriter (datosFiltrados))){
-			String line;
-			while ((line=br.readLine())!=null) {
-				if (cumpleFiltro(line)) {
-					System.out.println ("Se cumple filtro en la línea: "  + line);
-					bw.write(line);
-                    bw.newLine();
+
+	public static void filtrarDatos (String datos, String nombrefichero) {
+		try {
+			File fichero = new File(datos);
+			try (BufferedReader br = new BufferedReader (new FileReader(fichero))) {
+				String line=br.readLine();
+				while (line!=null) {
+					if (cumpleFiltro(line)) {
+						System.out.println ("Se cumple filtro en la línea: " + line);
+					}
+					line=br.readLine();
+					try (BufferedWriter bw = new BufferedWriter(new FileWriter(nombrefichero,true))) {
+						File ficheroFiltro = new File (nombrefichero);
+						if (!ficheroFiltro.exists()) {
+							ficheroFiltro.createNewFile();
+						}
+						bw.write(line+"\r\n");
+						bw.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}		
+		}
 	}
-	
-	public static boolean cumpleFiltro (String datos) {
-		String[] valores = datos.split(" ");
+
+	public static boolean cumpleFiltro (String linea) {
+		String[] valores = linea.split(";");
 		float anchoBanda = Float.parseFloat(valores[0]);
 		float throughput = Float.parseFloat(valores[1]);
-		float latencia = Float.parseFloat(valores[2]);
+		int latencia = Integer.parseInt(valores[2]);
 		int BER = Integer.parseInt(valores[3]);
 		int flujoDatos = Integer.parseInt(valores[4]);
 		
 		//Definir rangos de filtrado:
-		boolean cumpleAnchoBanda = anchoBanda >= 882; //Mayor del 90% presenta problemas
-		boolean cumpleThroughput = throughput <= 480; //Menor que 480 (50%) es más bajo de lo deseado y esto puede afectar la eficacia de la red.
+		boolean cumpleAnchoBanda = anchoBanda >= 882f; //Mayor del 90% presenta problemas
+		boolean cumpleThroughput = throughput <= 480f; //Menor que 480 (50%) es más bajo de lo deseado y esto puede afectar la eficacia de la red.
 		boolean cumpleLatencia = latencia > 100;//Latencia por encima de 100 ms da problemas
 		boolean cumpleBER = BER == 0; //NI IDEA DE CÓMO HACER ESTE
 		boolean cumpleFlujoDatos = flujoDatos == 1;//Cuando el flujo es 1 erlang, la red está totalmente ocupada

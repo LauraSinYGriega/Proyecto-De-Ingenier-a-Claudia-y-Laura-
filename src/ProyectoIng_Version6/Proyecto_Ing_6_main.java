@@ -14,7 +14,7 @@ import java.util.Vector;
  * Se han implementado nuevas funciones para facilitar el fragmento del main.
  * Se generan 2 ficheros, uno con los datos y otro con las cabeceras, siendo este último donde metemos el primer fichero
  * obteniendo como resultado el fichero con nombres y datos.
- * 
+ *  
  */
 
 
@@ -50,7 +50,7 @@ public class Proyecto_Ing_6_main {
 					// Pero usamos un truco y hacemos un ciclo infinito
 					try {
 						//Hacemos que el hilo duerma
-						Thread.sleep(4000);
+						Thread.sleep(1000);
 						//Realizamos las operaciones:
 						System.out.println("Guardando datos, espere...");
 						int x=0;
