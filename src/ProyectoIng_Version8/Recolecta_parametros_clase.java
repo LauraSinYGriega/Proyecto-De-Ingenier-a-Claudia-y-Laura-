@@ -36,6 +36,7 @@ public class Recolecta_parametros_clase implements Runnable {
 	}
 
 	boolean bandera=true;
+	Vector<String> v = new Vector<String>();
 	@Override
 	public void run() {
 		for (int i=0; i<repeticiones;i++) {
@@ -56,7 +57,7 @@ public class Recolecta_parametros_clase implements Runnable {
 					}
 					int x=0;
 					//Genera un vector con los datos
-					Vector<String> v = new Vector<String>();
+					//Vector<String> v = new Vector<String>();
 					v.add(new String (generaRandomINTyFLOAT()));
 					String Guardado = " ";//datos por posiciones
 					Guardado=v.get(x);//Llamada a cada vector
