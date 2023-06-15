@@ -56,7 +56,7 @@ public class Proyecto_Ing_v9_AlertasClass {
             listaFlotantes.add(numero);
         }
         return listaFlotantes;
-     }
+     } 
 	
 	public static Map<String,List<String>> separarDatosCSV(String nombreArchivo){
 		//MAP: Key:nombre del componente / Value: lista de los datos correspondientes a ese componente
