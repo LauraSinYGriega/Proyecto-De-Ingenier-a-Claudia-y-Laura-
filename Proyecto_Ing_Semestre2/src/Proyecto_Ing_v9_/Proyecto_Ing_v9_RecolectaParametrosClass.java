@@ -23,7 +23,7 @@ private int repeticiones;//función para poder utilizar la variable repeticiones 
 		float anchoBanda = random.nextFloat()*(1000-20 +1)+20;
 		float throughput = random.nextFloat()*(1000-20 +1)+20;
 		return anchoBanda + ";" + throughput;
-	}
+	}  
 
 
 	//Función que genera valores aleatorios enteros: BER y Flujo de Datos (además, añade la primera función de valores con decimales)
