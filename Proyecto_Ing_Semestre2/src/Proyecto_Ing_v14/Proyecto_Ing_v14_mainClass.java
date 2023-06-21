@@ -1,5 +1,14 @@
 package Proyecto_Ing_v14;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Random;
+import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
+
 //VERSIÓN 14.0 (¡DEFINITIVA!)
 /* 
  * Código realizado por Claudia Luna Roda y Laura Martínez Bravo
@@ -11,8 +20,7 @@ package Proyecto_Ing_v14;
 
 
 //Importamos las librerías generales:
-import java.io.*;
-import java.util.*;
+
 
 public class Proyecto_Ing_v14_mainClass {
 
@@ -21,7 +29,6 @@ public class Proyecto_Ing_v14_mainClass {
 	private static final String ARCHIVO_BASE_DATOS = "BaseDatos_v14.csv";
 	private static final long TIEMPO_ESPERA = 30 * 60 * 1000; //30 minutos en milisegundos
 
-	
 	//Instanciación de constantes para generar parámetros de red
 	//Ancho de Banda
 	private static final int MIN_ANCHOBANDA = 20;
@@ -59,7 +66,6 @@ public class Proyecto_Ing_v14_mainClass {
 		}
 	}//Llave método-generar datos
 
-	
 	//MÉTODO PARA GENERAR LOS ALEATORIOS Y HACER EL GUARDADO CADA X TIEMPO
 	public static void iniciarGeneracionDatosAutomatica() {
 		TimerTask tareaGenerarDatos = new TimerTask() {
@@ -68,10 +74,9 @@ public class Proyecto_Ing_v14_mainClass {
 				generarDatosRedAleatorios();//Llamada al método de generar parámetros
 			}
 		};
-		Timer timer = new Timer();
-		timer.scheduleAtFixedRate(tareaGenerarDatos, 0, TIEMPO_ESPERA);//Establecer tiempo
+		Timer timer = new Timer();//Objeto Timer para programar ejecución de tareas futuras
+		timer.scheduleAtFixedRate(tareaGenerarDatos, 0, TIEMPO_ESPERA);//(Tarea a programar, retardo inicial, intervalo de tiempo entre ejecución de tareas)
 	}//Llave método generar datos por tiempo
-
 
 	//MÉTODO DE CREACCIÓN DEL ARCHIVO
 	public static void crearArchivoBaseDatos() {
@@ -86,7 +91,6 @@ public class Proyecto_Ing_v14_mainClass {
 		}
 	}//Llave método-crear archivo
 
-	
 	//MÉTODO DE LECTURA DE LA BASE DE DATOS
 	public static void consultarBaseDatos() {
 		try (Scanner scanner = new Scanner(new File(ARCHIVO_BASE_DATOS))) {
@@ -103,7 +107,6 @@ public class Proyecto_Ing_v14_mainClass {
 			System.out.println("Error al cargar los datos desde el archivo.");
 		}
 	}//Llave método-lectura base
-
 
 	//MÉTODO PARA ANALIZAR LA BASE DE DATOS
 	public static void generarAnalisisDatos() {
@@ -170,62 +173,151 @@ public class Proyecto_Ing_v14_mainClass {
 			System.out.println("Error al cargar los datos desde el archivo.");
 		}	
 	}//Llave método análisis
+	
+	//MÉTODO PARA IMPRIMIR ALERTAS RESUMIDAS
+	public static void generarImpesionAlertasResumen() {
+		//Creamos un bloque Scanner para leer el archivo, y lo incluimos en un try-catch de evaluación
+		try (Scanner scanner = new Scanner(new File(ARCHIVO_BASE_DATOS))) {
+			if (!scanner.hasNext()) {//Comprobamos si el archivo está vacío
+				System.out.println("La base de datos está vacía. No se pueden generar análisis.");
+				return;
+			}
+			//Variable alertas
+			boolean alertaAnchoBanda=false;
+			boolean alertaThroughput=false;
+			boolean alertaLatencia=false;
+			boolean alertaTasaError=false;
+			boolean alertaFlujoDatos=false;
+			boolean alertaGeneral=false;
+			//Contador de veces que falla la red
+			int contadorAnchoBanda=0; int contadorThroughput=0; int contadorLatencia=0; int contadorTasaError=0; int contadorFlujoDatos=0;
+			int a=0; int b=0; int c=0; int d=0; int e=0;//Contador de errores
+			//Lectura de las líneas del archivo
+			while (scanner.hasNextLine()) {
+				String datos = scanner.nextLine();
+				String[] campos = datos.split(";");//Separamos las líneas que se van leyendo gracias a ;
+				//Si una línea tiene 5 parámetros (contamos el 0), se convierten a enteros.
+				if (campos.length == 5) {
+					int anchoBanda = Integer.parseInt(campos[0]);
+					int throughput = Integer.parseInt(campos[1]);
+					int latencia = Integer.parseInt(campos[2]);
+					double tasaError = Double.parseDouble(campos[3]);
+					int flujoDatos = Integer.parseInt(campos[4]);
 
+					//Comprobación del Ancho de Banda
+					if (anchoBanda >= 882) {
+						alertaAnchoBanda=true;
+						contadorAnchoBanda=a;
+						a++;
+					}
+					//Comprobación del Throughput
+					if (throughput <= 480) {
+						alertaThroughput=true;
+						contadorThroughput=b;
+						b++;
+					}
+					//Comprobación de la Latencia
+					if (latencia <= 100) {
+						alertaLatencia=true;
+						contadorLatencia=c;
+						c++;
+					}
+					//Comprobación de la tasa de error de bits (BER)
+					if (tasaError == 1e-3) {//Sistema muy bueno (10e-9), Sistema bueno (10e-6), Sistema dañado (10e-3)
+						alertaTasaError=true;
+						contadorTasaError=d;
+						d++;
+					}
+					//Comprobación del flujo de datos
+					if (flujoDatos ==1) {
+						alertaFlujoDatos=true;
+						contadorFlujoDatos=e;
+						e++;
+					}
+					//Guardado de la alerta:
+					if (alertaAnchoBanda==true||alertaThroughput==true||alertaLatencia==true||alertaTasaError==true||alertaFlujoDatos==true) {
+						alertaGeneral=true;
+
+					}
+				}
+			}//Llave while contador de líneas
+			//Bloque de impresión de número de fallos
+			if (alertaGeneral==true) {
+				if (a>0) {
+					System.out.println("El ancho de banda se ha visto perjudicado en " + a + " ocasiones.");
+				}
+				if (b>0) {
+					System.out.println("El throughput se ha visto perjudicado en " + b + " ocasiones.");
+				}
+				if (c>0) {
+					System.out.println("La latencia se ha visto perjudicada en " + c + " ocasiones.");
+				}
+				if (d>0) {
+					System.out.println("La tasa de error de bit se ha visto perjudicada en " + d + " ocasiones.");
+				}
+				if (e>0) {
+					System.out.println("El flujo de datos se ha visto perjudicado en " + e + " ocasiones.");
+				}
+			}//Llave fin if alerta general
+		} catch (FileNotFoundException e) {
+			System.out.println("Error al cargar los datos desde el archivo.");
+		}
+
+	}//Llave método análisis
 
 	//MÉTODO PARA IMPRIMIR ALERTAS ESPECÍFICAS DE LA BASE DE DATOS
-		public static void generarImpesionAlertas() {
-			//Creamos un bloque Scanner para leer el archivo, y lo incluimos en un try-catch de evaluación
-			try (Scanner scanner = new Scanner(new File(ARCHIVO_BASE_DATOS))) {
-				if (!scanner.hasNext()) {//Comprobamos si el archivo está vacío
-					System.out.println("La base de datos está vacía. No se pueden generar análisis.");
-					return;
-				}
-				//Lectura de las líneas del archivo
-				while (scanner.hasNextLine()) {
-					String datos = scanner.nextLine();
-					String[] campos = datos.split(";");//Separamos las líneas que se van leyendo gracias a ;
-					//Si una línea tiene 5 parámetros (contamos el 0), se convierten a enteros.
-					if (campos.length == 5) {
-						int anchoBanda = Integer.parseInt(campos[0]);
-						int throughput = Integer.parseInt(campos[1]);
-						int latencia = Integer.parseInt(campos[2]);
-						double tasaError = Double.parseDouble(campos[3]);
-						int flujoDatos = Integer.parseInt(campos[4]);
-						
-						//Comprobación del Ancho de Banda
-			            if (anchoBanda >= 882) {
-			            	System.out.println();
-			                System.out.println(">>Fallo en Ancho de banda>> La red ha superado el 90% de uso de su ancho de banda: " + datos);
-			            }
-			            //Comprobación del Throughput
-			            if (throughput <= 480) {
-			            	System.out.println();
-			                System.out.println(">>Fallo en Throughput>> El throughput es elevado, la conexión puede que se realentice en este momento: " + datos);
-			            }
-			            //Comprobación de la Latencia
-			            if (latencia <= 100) {
-			            	System.out.println();
-			                System.out.println(">>Fallo en Latencia>> La latencia ha superado los 100 ms en este momento: " + datos);
-			            }
-			            //Comprobación de la tasa de error de bits (BER)
-			            if (tasaError == 1e-3) {
-			            	System.out.println();
-			                System.out.println(">>Fallo en Tasa de Error (BER)>> El sistema está dañado, los bits no se han envíado correctamente: " + datos);
-			            }
-			            //Comprobación del flujo de datos
-			            if (flujoDatos ==1) {
-			            	System.out.println();
-			                System.out.println(">>Fallo en Flujo de Datos>> La red está totalmente ocupada durante este momento de medición: " + datos);
-			            }
-					}
-				}//Llave while contador de líneas
-			} catch (FileNotFoundException e) {
-				System.out.println("Error al cargar los datos desde el archivo.");
+	public static void generarImpesionAlertas() {
+		//Creamos un bloque Scanner para leer el archivo, y lo incluimos en un try-catch de evaluación
+		try (Scanner scanner = new Scanner(new File(ARCHIVO_BASE_DATOS))) {
+			if (!scanner.hasNext()) {//Comprobamos si el archivo está vacío
+				System.out.println("La base de datos está vacía. No se pueden generar análisis.");
+				return;
 			}
-			
-		}//Llave método análisis
-	
-		
+			//Lectura de las líneas del archivo
+			while (scanner.hasNextLine()) {
+				String datos = scanner.nextLine();
+				String[] campos = datos.split(";");//Separamos las líneas que se van leyendo gracias a ;
+				//Si una línea tiene 5 parámetros (contamos el 0), se convierten a enteros.
+				if (campos.length == 5) {
+					int anchoBanda = Integer.parseInt(campos[0]);
+					int throughput = Integer.parseInt(campos[1]);
+					int latencia = Integer.parseInt(campos[2]);
+					double tasaError = Double.parseDouble(campos[3]);
+					int flujoDatos = Integer.parseInt(campos[4]);
+
+					//Comprobación del Ancho de Banda
+					if (anchoBanda >= 882) {
+						System.out.println();
+						System.out.println(">>Fallo en Ancho de banda>> La red ha superado el 90% de uso de su ancho de banda: " + datos);
+					}
+					//Comprobación del Throughput
+					if (throughput <= 480) {
+						System.out.println();
+						System.out.println(">>Fallo en Throughput>> El throughput es elevado, la conexión puede que se realentice en este momento: " + datos);
+					}
+					//Comprobación de la Latencia
+					if (latencia <= 100) {
+						System.out.println();
+						System.out.println(">>Fallo en Latencia>> La latencia ha superado los 100 ms en este momento: " + datos);
+					}
+					//Comprobación de la tasa de error de bits (BER)
+					if (tasaError == 1e-3) {
+						System.out.println();
+						System.out.println(">>Fallo en Tasa de Error (BER)>> El sistema está dañado, los bits no se han envíado correctamente: " + datos);
+					}
+					//Comprobación del flujo de datos
+					if (flujoDatos ==1) {
+						System.out.println();
+						System.out.println(">>Fallo en Flujo de Datos>> La red está totalmente ocupada durante este momento de medición: " + datos);
+					}
+				}
+			}//Llave while contador de líneas
+		} catch (FileNotFoundException e) {
+			System.out.println("Error al cargar los datos desde el archivo.");
+		}
+
+	}//Llave método análisis
+
 	//MÉTODO PARA BORRAR LA BASE DE DATOS
 	private static void borrarDatosFichero(File ARCHIVO_BASE_DATOS) {
 		try {
@@ -237,9 +329,7 @@ public class Proyecto_Ing_v14_mainClass {
 			System.out.println("Error al borrar los datos del fichero " + ARCHIVO_BASE_DATOS.getName() + ": " + e.getMessage());
 		}
 	}//Llave método-borrado
-	
-	
-	
+		
 	//PUNTO DE ENTRADA DEL PROGRAMA:		
 	public static void main(String[] args) {
 		
@@ -248,12 +338,16 @@ public class Proyecto_Ing_v14_mainClass {
 		iniciarGeneracionDatosAutomatica();
 
 		boolean salir = false;//Bandera para salir del programa
+		boolean banderaInicio=true;
 		Scanner scanner;//Habilitamos el teclado para la interacción con el usuario durante el programa
 
 		while (salir == false) {
 			//Embellecedores del programa
+			if (banderaInicio==true) {
 			System.out.println();
 			System.out.println ("¡¡¡ Bienvanido al monitor de redes Cisco, Claura v14.0 !!!");
+			banderaInicio=false;
+			}
 			System.out.println();
 			//Opciones de menú
 			System.out.println ("     ¿Qué desea realizar? ");
@@ -287,12 +381,12 @@ public class Proyecto_Ing_v14_mainClass {
 				System.out.println("Procesando datos...");
 				System.out.println();
 				generarAnalisisDatos();//Llamada al método de análisis
-				System.out.println("¿Desea visualizar los momentos en los que ha fallado la red, y su motivo?");
+				System.out.println("¿Desea visualizar los momentos en los que ha fallado la red?");
 				System.out.println("Sí o No");
 				String usuario = scanner.next();
 				//Evaluación de la opción del usuario, y ejecución de la misma
 				if (usuario.equalsIgnoreCase("si")) {
-					generarImpesionAlertas();//Llamada al método de alertas
+					generarImpesionAlertasResumen();//Llamada al método de alertas resumen
 					break;
 				}else if (usuario.equalsIgnoreCase("no")) {
 		            break;
